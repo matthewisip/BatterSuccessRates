@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batter Success Rates</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .count {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Batter Success Rates</h1>
+
+        <!-- Input Section -->
+        <div class="input-group">
+            <label for="batter-handedness">Batter Handedness:</label>
+            <select id="batter-handedness">
+                <option value="L">Left (L)</option>
+                <option value="R">Right (R)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="pitch-type">Pitch Type:</label>
+            <select id="pitch-type">
+                <option value="FB">Fastball (FB)</option>
+                <option value="CB">Curveball (CB)</option>
+                <option value="CH">Changeup (CH)</option>
+                <option value="SL">Slider (SL)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="pitch-result">Result of Pitch:</label>
+            <input type="text" id="pitch-result" placeholder="Enter result (e.g., Strike, Ball, Hit, Out)">
+        </div>
+
+        <button id="add-entry">Add Entry</button>
+
+        <!-- Display Section -->
+        <h2>Success Rates</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pitch Type</th>
+                    <th>Batter Handedness</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="results-table">
+                <!-- Data will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <div class="count" id="count-display">
+            Count: 0-0
+        </div>
+
+        <div class="input-group">
+            <button id="fetch-analysis">Fetch Analysis</button>
+        </div>
+
+        <div id="analysis-results">
+            <!-- Analysis results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const addEntryButton = document.getElementById('add-entry');
+        const fetchAnalysisButton = document.getElementById('fetch-analysis');
+        const resultsTable = document.getElementById('results-table');
+        const countDisplay = document.getElementById('count-display');
+        const analysisResults = document.getElementById('analysis-results');
+
+        let balls = 0;
+        let strikes = 0;
+
+        function updateCountDisplay() {
+            countDisplay.textContent = `Count: ${balls}-${strikes}`;
+        }
+
+        function displayAnalysis(data) {
+            analysisResults.innerHTML = '<h3>Analysis Results</h3>';
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Pitch Type</th>
+                        <th>Total Pitches</th>
+                        <th>Successes</th>
+                        <th>Success Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(row => `
+                        <tr>
+                            <td>${row.pitch_type}</td>
+                            <td>${row.total_pitches}</td>
+                            <td>${row.successes}</td>
+                            <td>${(row.success_rate * 100).toFixed(2)}%</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            analysisResults.appendChild(table);
+        }
+
+        addEntryButton.addEventListener('click', () => {
+            const handedness = document.getElementById('batter-handedness').value;
+            const pitchType = document.getElementById('pitch-type').value;
+            const result = document.getElementById('pitch-result').value.trim();
+
+            if (result) {
+                const newRow = document.createElement('tr');
+
+                newRow.innerHTML = `
+                    <td>${pitchType}</td>
+                    <td>${handedness}</td>
+                    <td>${result}</td>
+                `;
+
+                resultsTable.appendChild(newRow);
+
+                if (result.toLowerCase() === 'strike') {
+                    strikes++;
+                    if (strikes >= 3) {
+                        strikes = 0;
+                        balls = 0;
+                        alert('Strikeout! Count reset.');
+                    }
+                } else if (result.toLowerCase() === 'ball') {
+                    balls++;
+                    if (balls >= 4) {
+                        strikes = 0;
+                        balls = 0;
+                        alert('Walk! Count reset.');
+                    }
+                } else if (result.toLowerCase() === 'hit' || result.toLowerCase() === 'out') {
+                    strikes = 0;
+                    balls = 0;
+                }
+
+                updateCountDisplay();
+                document.getElementById('pitch-result').value = '';
+            } else {
+                alert('Please enter the result of the pitch.');
+            }
+        });
+
+        fetchAnalysisButton.addEventListener('click', () => {
+            const count = `${balls}-${strikes}`;
+
+            fetch(`http://localhost:5000/analyze_scenario?balls=${balls}&strikes=${strikes}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayAnalysis(data);
+                })
+                .catch(error => {
+                    analysisResults.innerHTML = `<p>Error: ${error.message}</p>`;
+                });
+        });
+
+        updateCountDisplay();
+    </script>
+</body>
+</html>
