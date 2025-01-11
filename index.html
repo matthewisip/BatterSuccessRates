@@ -7,60 +7,192 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            height: 100vh;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+
+        .sidebar {
+            width: 25%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
         h1 {
             text-align: center;
         }
+
         .input-group {
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+
         label {
-            display: block;
-            margin-bottom: 5px;
+            flex: 1;
+            margin-right: 10px;
+            font-weight: bold;
         }
-        input, select, button {
-            width: 100%;
+
+        input, select {
+            flex: 1;
             padding: 10px;
-            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-sizing: border-box;
         }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .inline-inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .inline-inputs div {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .inline-inputs input {
+            width: 100%;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         th, td {
             border: 1px solid #ccc;
             padding: 10px;
             text-align: center;
         }
+
         th {
             background-color: #f4f4f4;
         }
+
         .count {
             margin-top: 20px;
             font-size: 1.2em;
             text-align: center;
         }
+
+        .sequence {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .stat-box-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            width: 30%;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .stat-box p {
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .success-rates-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .success-box {
+            width: 30%;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .success-box p {
+            font-size: 1.2em;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Batter Success Rates</h1>
+    <div class="sidebar">
+        <h2>Pitch Input</h2>
+        <div class="input-group inline-inputs">
+            <div>
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date">
+            </div>
+            <div>
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date">
+            </div>
+        </div>
 
-        <!-- Input Section -->
+        <div class="input-group inline-inputs">
+            <div>
+                <label for="min-plate-appearances">Min PA:</label>
+                <input type="number" id="min-plate-appearances" placeholder="Min PA">
+            </div>
+            <div>
+                <label for="min-innings-pitched">Min IP:</label>
+                <input type="number" id="min-innings-pitched" placeholder="Min IP">
+            </div>
+        </div>
+
         <div class="input-group">
             <label for="batter-handedness">Batter Handedness:</label>
             <select id="batter-handedness">
-                <option value="L">Left (L)</option>
                 <option value="R">Right (R)</option>
+                <option value="L">Left (L)</option>
             </select>
         </div>
 
@@ -71,6 +203,8 @@
                 <option value="CB">Curveball (CB)</option>
                 <option value="CH">Changeup (CH)</option>
                 <option value="SL">Slider (SL)</option>
+                <option value="CU">Cutter (CU)</option>
+                <option value="SI">Sinker (SI)</option>
             </select>
         </div>
 
@@ -79,9 +213,62 @@
             <input type="text" id="pitch-result" placeholder="Enter result (e.g., Strike, Ball, Hit, Out)">
         </div>
 
-        <button id="add-entry">Add Entry</button>
+        <button id="pitch-button">Pitch</button>
+    </div>
 
-        <!-- Display Section -->
+    <div class="content">
+        <h1>Batter Success Rates</h1>
+
+        <div class="count" id="count-display">
+            Count: 0-0
+        </div>
+
+        <div class="sequence" id="sequence-display">
+            Sequence: 
+        </div>
+
+        <div class="stat-box-container">
+            <div class="stat-box">
+                <h3>Batting %</h3>
+                <p id="batting-percentage">--%</p>
+            </div>
+            <div class="stat-box">
+                <h3>Slugging %</h3>
+                <p id="slugging-percentage">--%</p>
+            </div>
+            <div class="stat-box">
+                <h3>Expected Success %</h3>
+                <p id="expected-success">--%</p>
+            </div>
+        </div>
+
+        <div class="success-rates-container">
+            <div class="success-box">
+                <h4>Fastball Success</h4>
+                <p id="fastball-success">--%</p>
+            </div>
+            <div class="success-box">
+                <h4>Curveball Success</h4>
+                <p id="curveball-success">--%</p>
+            </div>
+            <div class="success-box">
+                <h4>Changeup Success</h4>
+                <p id="changeup-success">--%</p>
+            </div>
+            <div class="success-box">
+                <h4>Slider Success</h4>
+                <p id="slider-success">--%</p>
+            </div>
+            <div class="success-box">
+                <h4>Cutter Success</h4>
+                <p id="cutter-success">--%</p>
+            </div>
+            <div class="success-box">
+                <h4>Sinker Success</h4>
+                <p id="sinker-success">--%</p>
+            </div>
+        </div>
+
         <h2>Success Rates</h2>
         <table>
             <thead>
@@ -96,120 +283,96 @@
             </tbody>
         </table>
 
-        <div class="count" id="count-display">
-            Count: 0-0
-        </div>
-
-        <div class="input-group">
-            <button id="fetch-analysis">Fetch Analysis</button>
-        </div>
-
         <div id="analysis-results">
             <!-- Analysis results will be displayed here -->
         </div>
     </div>
 
     <script>
-        const addEntryButton = document.getElementById('add-entry');
-        const fetchAnalysisButton = document.getElementById('fetch-analysis');
-        const resultsTable = document.getElementById('results-table');
-        const countDisplay = document.getElementById('count-display');
-        const analysisResults = document.getElementById('analysis-results');
-
         let balls = 0;
         let strikes = 0;
+        let sequence = [];
+        let isNewAtBat = false;
 
-        function updateCountDisplay() {
-            countDisplay.textContent = `Count: ${balls}-${strikes}`;
-        }
+        function updateCountDisplay(result) {
+            const countDisplay = document.getElementById('count-display');
 
-        function displayAnalysis(data) {
-            analysisResults.innerHTML = '<h3>Analysis Results</h3>';
-            const table = document.createElement('table');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Pitch Type</th>
-                        <th>Total Pitches</th>
-                        <th>Successes</th>
-                        <th>Success Rate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data.map(row => `
-                        <tr>
-                            <td>${row.pitch_type}</td>
-                            <td>${row.total_pitches}</td>
-                            <td>${row.successes}</td>
-                            <td>${(row.success_rate * 100).toFixed(2)}%</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            `;
-            analysisResults.appendChild(table);
-        }
-
-        addEntryButton.addEventListener('click', () => {
-            const handedness = document.getElementById('batter-handedness').value;
-            const pitchType = document.getElementById('pitch-type').value;
-            const result = document.getElementById('pitch-result').value.trim();
-
-            if (result) {
-                const newRow = document.createElement('tr');
-
-                newRow.innerHTML = `
-                    <td>${pitchType}</td>
-                    <td>${handedness}</td>
-                    <td>${result}</td>
-                `;
-
-                resultsTable.appendChild(newRow);
-
-                if (result.toLowerCase() === 'strike') {
-                    strikes++;
-                    if (strikes >= 3) {
-                        strikes = 0;
-                        balls = 0;
-                        alert('Strikeout! Count reset.');
-                    }
-                } else if (result.toLowerCase() === 'ball') {
-                    balls++;
-                    if (balls >= 4) {
-                        strikes = 0;
-                        balls = 0;
-                        alert('Walk! Count reset.');
-                    }
-                } else if (result.toLowerCase() === 'hit' || result.toLowerCase() === 'out') {
-                    strikes = 0;
-                    balls = 0;
-                }
-
-                updateCountDisplay();
-                document.getElementById('pitch-result').value = '';
+            if (result === 'strikeout') {
+                countDisplay.textContent = 'Result: K';
+            } else if (result === 'walk') {
+                countDisplay.textContent = 'Result: BB';
             } else {
-                alert('Please enter the result of the pitch.');
+                countDisplay.textContent = `Count: ${balls}-${strikes}`;
             }
+        }
+
+        function updateSequenceDisplay() {
+            const sequenceDisplay = document.getElementById('sequence-display');
+            sequenceDisplay.textContent = `Sequence: ${sequence.join(' - ')}`;
+        }
+
+        function resetAtBat() {
+            balls = 0;
+            strikes = 0;
+            sequence = [];
+            isNewAtBat = true;
+        }
+
+        document.getElementById('pitch-button').addEventListener('click', function() {
+            const pitchType = document.getElementById('pitch-type').value;
+            const handedness = document.getElementById('batter-handedness').value;
+            const result = document.getElementById('pitch-result').value.trim().toLowerCase();
+
+            if (!result) {
+                alert('Please enter the result of the pitch.');
+                return;
+            }
+
+            if (isNewAtBat) {
+                resetAtBat();
+                const table = document.getElementById('results-table');
+                while (table.rows.length > 0) {
+                    table.deleteRow(0);
+                }
+                isNewAtBat = false;
+            }
+
+            const table = document.getElementById('results-table');
+            const newRow = table.insertRow();
+
+            const pitchTypeCell = newRow.insertCell(0);
+            const handednessCell = newRow.insertCell(1);
+            const resultCell = newRow.insertCell(2);
+
+            pitchTypeCell.textContent = pitchType;
+            handednessCell.textContent = handedness;
+            resultCell.textContent = result.charAt(0).toUpperCase() + result.slice(1);
+
+            sequence.push(pitchType);
+            updateSequenceDisplay();
+
+            if (result === 'strike') {
+                strikes++;
+                if (strikes >= 3) {
+                    updateCountDisplay('strikeout');
+                    resetAtBat();
+                } else {
+                    updateCountDisplay();
+                }
+            } else if (result === 'ball') {
+                balls++;
+                if (balls >= 4) {
+                    updateCountDisplay('walk');
+                    resetAtBat();
+                } else {
+                    updateCountDisplay();
+                }
+            } else if (['hit', 'out'].includes(result)) {
+                resetAtBat();
+            }
+
+            document.getElementById('pitch-result').value = '';
         });
-
-        fetchAnalysisButton.addEventListener('click', () => {
-            const count = `${balls}-${strikes}`;
-
-            fetch(`http://localhost:5000/analyze_scenario?balls=${balls}&strikes=${strikes}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    displayAnalysis(data);
-                })
-                .catch(error => {
-                    analysisResults.innerHTML = `<p>Error: ${error.message}</p>`;
-                });
-        });
-
-        updateCountDisplay();
     </script>
 </body>
 </html>
