@@ -7,131 +7,135 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Pitch Input</h2>
-        <div class="input-group inline-dates">
-            <div>
-                <label for="start-date">Start Date:</label>
-                <input type="date" id="start-date">
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <button id="toggle-sidebar-button" class="toggle-icon">&laquo;</button>
+            <h2>Pitch Input</h2>
+            <div class="input-group inline-dates">
+                <div>
+                    <label for="start-date">Start Date:</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div>
+                    <label for="end-date">End Date:</label>
+                    <input type="date" id="end-date">
+                </div>
             </div>
-            <div>
-                <label for="end-date">End Date:</label>
-                <input type="date" id="end-date">
+
+            <div class="input-group inline-inputs">
+                <div>
+                    <label for="min-plate-appearances">Min PA:</label>
+                    <input type="number" id="min-plate-appearances" placeholder="Min PA">
+                </div>
+                <div>
+                    <label for="min-innings-pitched">Min IP:</label>
+                    <input type="number" id="min-innings-pitched" placeholder="Min IP">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="batter-handedness">Batter Handedness:</label>
+                <select id="batter-handedness">
+                    <option value="R">Right (R)</option>
+                    <option value="L">Left (L)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="pitch-type">Pitch Type:</label>
+                <select id="pitch-type">
+                    <option value="FB">Fastball (FB)</option>
+                    <option value="CB">Curveball (CB)</option>
+                    <option value="CH">Changeup (CH)</option>
+                    <option value="SL">Slider (SL)</option>
+                    <option value="CU">Cutter (CU)</option>
+                    <option value="SI">Sinker (SI)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="pitch-result">Result of Pitch:</label>
+                <input type="text" id="pitch-result" placeholder="Enter result (e.g., Strike, Ball, Hit, Out, Foul)">
+            </div>
+
+            <button id="pitch-button">Pitch</button>
+            <button id="undo-button">Undo Last Pitch</button>
+        </div>
+
+        <div class="content">
+            <h1>Batter Success Rates</h1>
+
+            <div class="count" id="count-display">
+                Count: 0-0
+            </div>
+
+            <div class="sequence" id="sequence-display">
+                Sequence: 
+            </div>
+
+            <div class="stat-box-container">
+                <div class="stat-box">
+                    <h3>Batting %</h3>
+                    <p id="batting-percentage">--%</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Slugging %</h3>
+                    <p id="slugging-percentage">--%</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Expected Success %</h3>
+                    <p id="expected-success">--%</p>
+                </div>
+            </div>
+
+            <div class="success-rates-container">
+                <div class="success-box">
+                    <h4>Fastball Success</h4>
+                    <p id="fastball-success">--%</p>
+                </div>
+                <div class="success-box">
+                    <h4>Curveball Success</h4>
+                    <p id="curveball-success">--%</p>
+                </div>
+                <div class="success-box">
+                    <h4>Changeup Success</h4>
+                    <p id="changeup-success">--%</p>
+                </div>
+                <div class="success-box">
+                    <h4>Slider Success</h4>
+                    <p id="slider-success">--%</p>
+                </div>
+                <div class="success-box">
+                    <h4>Cutter Success</h4>
+                    <p id="cutter-success">--%</p>
+                </div>
+                <div class="success-box">
+                    <h4>Sinker Success</h4>
+                    <p id="sinker-success">--%</p>
+                </div>
+            </div>
+
+            <h2>Success Rates</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pitch Type</th>
+                        <th>Batter Handedness</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+
+            <div id="analysis-results">
+                <!-- Analysis results will be displayed here -->
             </div>
         </div>
-
-        <div class="input-group inline-inputs">
-            <div>
-                <label for="min-plate-appearances">Min PA:</label>
-                <input type="number" id="min-plate-appearances" placeholder="Min PA">
-            </div>
-            <div>
-                <label for="min-innings-pitched">Min IP:</label>
-                <input type="number" id="min-innings-pitched" placeholder="Min IP">
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label for="batter-handedness">Batter Handedness:</label>
-            <select id="batter-handedness">
-                <option value="R">Right (R)</option>
-                <option value="L">Left (L)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="pitch-type">Pitch Type:</label>
-            <select id="pitch-type">
-                <option value="FB">Fastball (FB)</option>
-                <option value="CB">Curveball (CB)</option>
-                <option value="CH">Changeup (CH)</option>
-                <option value="SL">Slider (SL)</option>
-                <option value="CU">Cutter (CU)</option>
-                <option value="SI">Sinker (SI)</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="pitch-result">Result of Pitch:</label>
-            <input type="text" id="pitch-result" placeholder="Enter result (e.g., Strike, Ball, Hit, Out, Foul)">
-        </div>
-
-        <button id="pitch-button">Pitch</button>
-        <button id="undo-button">Undo Last Pitch</button>
     </div>
 
-    <div class="content">
-        <h1>Batter Success Rates</h1>
-
-        <div class="count" id="count-display">
-            Count: 0-0
-        </div>
-
-        <div class="sequence" id="sequence-display">
-            Sequence: 
-        </div>
-
-        <div class="stat-box-container">
-            <div class="stat-box">
-                <h3>Batting %</h3>
-                <p id="batting-percentage">--%</p>
-            </div>
-            <div class="stat-box">
-                <h3>Slugging %</h3>
-                <p id="slugging-percentage">--%</p>
-            </div>
-            <div class="stat-box">
-                <h3>Expected Success %</h3>
-                <p id="expected-success">--%</p>
-            </div>
-        </div>
-
-        <div class="success-rates-container">
-            <div class="success-box">
-                <h4>Fastball Success</h4>
-                <p id="fastball-success">--%</p>
-            </div>
-            <div class="success-box">
-                <h4>Curveball Success</h4>
-                <p id="curveball-success">--%</p>
-            </div>
-            <div class="success-box">
-                <h4>Changeup Success</h4>
-                <p id="changeup-success">--%</p>
-            </div>
-            <div class="success-box">
-                <h4>Slider Success</h4>
-                <p id="slider-success">--%</p>
-            </div>
-            <div class="success-box">
-                <h4>Cutter Success</h4>
-                <p id="cutter-success">--%</p>
-            </div>
-            <div class="success-box">
-                <h4>Sinker Success</h4>
-                <p id="sinker-success">--%</p>
-            </div>
-        </div>
-
-        <h2>Success Rates</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Pitch Type</th>
-                    <th>Batter Handedness</th>
-                    <th>Result</th>
-                </tr>
-            </thead>
-            <tbody id="results-table">
-                <!-- Data will be dynamically inserted here -->
-            </tbody>
-        </table>
-
-        <div id="analysis-results">
-            <!-- Analysis results will be displayed here -->
-        </div>
-    </div>
-
+    <div id="restore-button-container"></div> <!-- Placeholder for the restore button -->
     <script src="app.js"></script>
 </body>
 </html>

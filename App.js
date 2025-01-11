@@ -32,7 +32,7 @@ function storePreviousCount() {
     previousCount = { balls, strikes };
 }
 
-document.getElementById('pitch-button').addEventListener('click', function() {
+document.getElementById('pitch-button').addEventListener('click', function () {
     const pitchType = document.getElementById('pitch-type').value;
     const handedness = document.getElementById('batter-handedness').value;
     const resultInput = document.getElementById('pitch-result').value.trim().toLowerCase();
@@ -104,7 +104,7 @@ document.getElementById('pitch-button').addEventListener('click', function() {
 });
 
 // Undo last pitch functionality
-document.getElementById('undo-button').addEventListener('click', function() {
+document.getElementById('undo-button').addEventListener('click', function () {
     const table = document.getElementById('results-table');
 
     if (table.rows.length > 0) {
@@ -134,7 +134,7 @@ document.getElementById('undo-button').addEventListener('click', function() {
         }
 
         // Update the sequence based on the table rows
-        sequence = Array.from({ length: table.rows.length }, (_, i) => 
+        sequence = Array.from({ length: table.rows.length }, (_, i) =>
             table.rows[i].cells[0].textContent
         );
 
@@ -153,4 +153,33 @@ document.getElementById('undo-button').addEventListener('click', function() {
     } else {
         alert('No pitch to undo!');
     }
+});
+
+// Toggle sidebar functionality
+const sidebar = document.getElementById('sidebar');
+const container = document.querySelector('.container');
+const toggleButton = document.getElementById('toggle-sidebar-button');
+const restoreButtonContainer = document.getElementById('restore-button-container');
+
+// Create the restore button dynamically
+const restoreButton = document.createElement('button');
+restoreButton.id = 'restore-sidebar-button';
+restoreButton.innerHTML = '&raquo;'; // Double-angle right symbol for ">>"
+restoreButton.style.display = 'none'; // Initially hide the restore button
+restoreButtonContainer.appendChild(restoreButton);
+
+// Toggle the sidebar visibility
+toggleButton.addEventListener('click', () => {
+    sidebar.classList.add('minimized');
+    container.classList.add('minimized');
+    toggleButton.style.display = 'none'; // Hide the "Hide Sidebar" button
+    restoreButton.style.display = 'flex'; // Show the circular restore button
+});
+
+// Restore the sidebar visibility
+restoreButton.addEventListener('click', () => {
+    sidebar.classList.remove('minimized');
+    container.classList.remove('minimized');
+    toggleButton.style.display = 'flex'; // Show the "Hide Sidebar" button
+    restoreButton.style.display = 'none'; // Hide the restore button
 });
