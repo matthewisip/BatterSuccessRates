@@ -21,7 +21,6 @@
                     <input type="date" id="end-date">
                 </div>
             </div>
-
             <div class="input-group inline-inputs">
                 <div>
                     <label for="min-plate-appearances">Min PA:</label>
@@ -32,7 +31,6 @@
                     <input type="number" id="min-innings-pitched" placeholder="Min IP">
                 </div>
             </div>
-
             <div class="input-group">
                 <label for="batter-handedness">Batter Handedness:</label>
                 <select id="batter-handedness">
@@ -40,7 +38,6 @@
                     <option value="L">Left (L)</option>
                 </select>
             </div>
-
             <div class="input-group">
                 <label for="pitch-type">Pitch Type:</label>
                 <select id="pitch-type">
@@ -52,7 +49,6 @@
                     <option value="SI">Sinker (SI)</option>
                 </select>
             </div>
-
             <div class="input-group">
                 <label for="pitch-result">Result of Pitch:</label>
                 <input type="text" id="pitch-result" placeholder="Enter result (e.g., Strike, Ball, Hit, Out, Foul)">
@@ -61,7 +57,6 @@
             <button id="pitch-button">Pitch</button>
             <button id="undo-button">Undo Last Pitch</button>
         </div>
-
         <div class="content">
             <h1>Batter Success Rates</h1>
 
@@ -72,7 +67,6 @@
             <div class="sequence" id="sequence-display">
                 Sequence: 
             </div>
-
             <div class="stat-box-container">
                 <div class="stat-box">
                     <h3>Batting %</h3>
@@ -87,7 +81,6 @@
                     <p id="expected-success">--%</p>
                 </div>
             </div>
-
             <div class="success-rates-container">
                 <div class="success-box">
                     <h4>Fastball Success</h4>
@@ -114,7 +107,6 @@
                     <p id="sinker-success">--%</p>
                 </div>
             </div>
-
             <h2>Success Rates</h2>
             <table>
                 <thead>
@@ -125,17 +117,15 @@
                     </tr>
                 </thead>
                 <tbody id="results-table">
-                    <!-- Data will be dynamically inserted here -->
+                    <!-- Data to be inserted here -->
                 </tbody>
             </table>
-
             <div id="analysis-results">
-                <!-- Analysis results will be displayed here -->
+                <!-- Analysis to be displayed here -->
             </div>
         </div>
     </div>
-
-    <div id="restore-button-container"></div> <!-- Placeholder for the restore button -->
+    <div id="restore-button-container"></div>
     <script src="app.js"></script>
 </body>
 </html>
